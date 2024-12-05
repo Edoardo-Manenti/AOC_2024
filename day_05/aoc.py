@@ -62,7 +62,7 @@ def part2(input_file):
 
 def solution():
     input_file = open("input.txt", "r").read()
-    #print(part1(input_file))
+    print(part1(input_file))
     print(part2(input_file))
     
 if __name__ == "__main__":
