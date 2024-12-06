@@ -80,7 +80,3 @@ class AocTestClass(unittest.TestCase):
         self.assertEqual(value, expected_value)
 if __name__ == "__main__":
     unittest.main(verbosity=3)
-    #suite = unittest.TestSuite()
-    #suite.addTest(AocTestClass("test_part2"))
-    #runner = unittest.TextTestRunner()
-    #runner.run(suite)
