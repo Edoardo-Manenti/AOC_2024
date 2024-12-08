@@ -113,7 +113,7 @@ T....#....
 ..........
 ```
 
-In fact, the three T-frequency antennas are all exactly in line with two antennas, so they are all also antinodes! This brings the total number of antinodes in the above example to '9'.
+In fact, the three T-frequency antennas are all exactly in line with two antennas, so they are all also antinodes! This brings the total number of antinodes in the above example to `9`.
 
 The original example now has `34` antinodes, including the antinodes that appear on every antenna:
 
