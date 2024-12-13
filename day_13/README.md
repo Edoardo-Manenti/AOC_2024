@@ -1,126 +1,75 @@
-# Day 10: Hoof It 
+# Day 13: Claw Contraption
 ## Part One
-You all arrive at a Lava Production Facility on a floating island in the sky. As the others begin to search the massive industrial complex, you feel a small nose boop your leg and look down to discover a reindeer wearing a hard hat.
+Next up: the lobby of a resort on a tropical island. The Historians take a moment to admire the hexagonal floor tiles before spreading out.
 
-The reindeer is holding a book titled "Lava Island Hiking Guide". However, when you open the book, you discover that most of it seems to have been scorched by lava! As you're about to ask how you can help, the reindeer brings you a blank topographic map of the surrounding area (your puzzle input) and looks up at you excitedly.
+Fortunately, it looks like the resort has a new arcade! Maybe you can win some prizes from the claw machines?
 
-Perhaps you can help fill in the missing hiking trails?
+The claw machines here are a little unusual. Instead of a joystick or directional buttons to control the claw, these machines have two buttons labeled `A` and `B`. Worse, you can't just put in a token and play; it costs `3` tokens to push the `A` button and `1` token to push the `B` button.
 
-The topographic map indicates the height at each position using a scale from `0` (lowest) to `9` (highest). For example:
+With a little experimentation, you figure out that each machine's buttons are configured to move the claw a specific amount to the right (along the X axis) and a specific amount forward (along the Y axis) each time that button is pressed.
 
-```
-0123
-1234
-8765
-9876
-```
-Based on un-scorched scraps of the book, you determine that a good hiking trail is as long as possible and has an even, gradual, uphill slope. For all practical purposes, this means that a hiking trail is any path that starts at height `0`, ends at height `9`, and always increases by a height of exactly 1 at each step. Hiking trails never include diagonal steps - only up, down, left, or right (from the perspective of the map).
+Each machine contains one prize; to win the prize, the claw must be positioned exactly above the prize on both the X and Y axes.
 
-You look up from the map and notice that the reindeer has helpfully begun to construct a small pile of pencils, markers, rulers, compasses, stickers, and other equipment you might need to update the map with hiking trails.
-
-A trailhead is any position that starts one or more hiking trails - here, these positions will always have height `0`. Assembling more fragments of pages, you establish that a trailhead's score is the number of 9-height positions reachable from that trailhead via a hiking trail. In the above example, the single trailhead in the top left corner has a score of `1` because it can reach a single `9` (the one in the bottom left).
-
-This trailhead has a score of `2`:
+You wonder: what is the smallest number of tokens you would have to spend to win as many prizes as possible? You assemble a list of every machine's button behavior and prize location (your puzzle input). For example:
 
 ```
-...0...
-...1...
-...2...
-6543456
-7.....7
-8.....8
-9.....9
-```
-(The positions marked . are impassable tiles to simplify these examples; they do not appear on your actual topographic map.)
+Button A: X+94, Y+34
+Button B: X+22, Y+67
+Prize: X=8400, Y=5400
 
-This trailhead has a score of `4` because every `9` is reachable via a hiking trail except the one immediately to the left of the trailhead:
-```
-..90..9
-...1.98
-...2..7
-6543456
-765.987
-876....
-987....
-```
-This topographic map contains two trailheads; the trailhead at the top has a score of `1`, while the trailhead at the bottom has a score of `2`:
-```
-10..9..
-2...8..
-3...7..
-4567654
-...8..3
-...9..2
-.....01
-```
-Here's a larger example:
-```
-89010123
-78121874
-87430965
-96549874
-45678903
-32019012
-01329801
-10456732
-```
-This larger example has `9` trailheads. Considering the trailheads in reading order, they have scores of `5`, `6`, `5`, `3`, `1`, `3`, `5`, `3`, and `5`. Adding these scores together, the sum of the scores of all trailheads is `36`.
+Button A: X+26, Y+66
+Button B: X+67, Y+21
+Prize: X=12748, Y=12176
 
-The reindeer gleefully carries over a protractor and adds it to the pile. What is the sum of the scores of all trailheads on your topographic map?
+Button A: X+17, Y+86
+Button B: X+84, Y+37
+Prize: X=7870, Y=6450
 
-# Part Two 
-The reindeer spends a few minutes reviewing your hiking trail map before realizing something, disappearing for a few minutes, and finally returning with yet another slightly-charred piece of paper.
+Button A: X+69, Y+23
+Button B: X+27, Y+71
+Prize: X=18641, Y=10279
+```
+This list describes the button configuration and prize location of four different claw machines.
 
-The paper describes a second way to measure a trailhead called its rating. A trailhead's rating is the number of distinct hiking trails which begin at that trailhead. For example:
-```
-.....0.
-..4321.
-..5..2.
-..6543.
-..7..4.
-..8765.
-..9....
-```
-The above map has a single trailhead; its rating is `3` because there are exactly three distinct hiking trails which begin at that position:
-```
-.....0.   .....0.   .....0.
-..4321.   .....1.   .....1.
-..5....   .....2.   .....2.
-..6....   ..6543.   .....3.
-..7....   ..7....   .....4.
-..8....   ..8....   ..8765.
-..9....   ..9....   ..9....
-```
-Here is a map containing a single trailhead with rating `13`:
-```
-..90..9
-...1.98
-...2..7
-6543456
-765.987
-876....
-987....
-```
-This map contains a single trailhead with rating `227` (because there are `121` distinct hiking trails that lead to the `9` on the right edge and `106` that lead to the `9` on the bottom edge):
-```
-012345
-123456
-234567
-345678
-4.6789
-56789.
-```
-Here's the larger example from before:
-```
-89010123
-78121874
-87430965
-96549874
-45678903
-32019012
-01329801
-10456732
-```
-Considering its trailheads in reading order, they have ratings of `20`, `24`, `10`, `4`, `1`, `4`, `5`, `8`, and `5`. The sum of all trailhead ratings in this larger example topographic map is `81`.
+For now, consider just the first claw machine in the list:
 
-You're not sure how, but the reindeer seems to have crafted some tiny flags out of toothpicks and bits of paper and is using them to mark trailheads on your topographic map. What is the sum of the ratings of all trailheads?
+Pushing the machine's `A` button would move the claw `94` units along the X axis and `34` units along the Y axis.
+Pushing the `B` button would move the claw `22` units along the X axis and `67` units along the Y axis.
+The prize is located at `X=8400`, `Y=5400`; this means that from the claw's initial position, it would need to move exactly `8400` units along the X axis and exactly `5400` units along the Y axis to be perfectly aligned with the prize in this machine.
+The cheapest way to win the prize is by pushing the A button `80` times and the B button `40` times. This would line up the claw along the X axis (because `80*94 + 40*22 = 8400`) and along the Y axis (because `80*34 + 40*67 = 5400`). Doing this would cost `80*3` tokens for the A presses and `40*1` for the B presses, a total of `280` tokens.
+
+For the second and fourth claw machines, there is no combination of A and B presses that will ever win a prize.
+
+For the third claw machine, the cheapest way to win the prize is by pushing the A button `38` times and the B button `86` times. Doing this would cost a total of `200` tokens.
+
+So, the most prizes you could possibly win is two; the minimum tokens you would have to spend to win all (two) prizes is `480`.
+
+You estimate that each button would need to be pressed no more than 100 times to win a prize. How else would someone be expected to play?
+
+Figure out how to win as many prizes as possible. What is the fewest tokens you would have to spend to win all possible prizes?
+
+## Part Two
+As you go to win the first prize, you discover that the claw is nowhere near where you expected it would be. Due to a unit conversion error in your measurements, the position of every prize is actually `10000000000000` higher on both the X and Y axis!
+
+Add 10000000000000 to the X and Y position of every prize. After making this change, the example above would now look like this:
+
+```
+Button A: X+94, Y+34
+Button B: X+22, Y+67
+Prize: X=10000000008400, Y=10000000005400
+
+Button A: X+26, Y+66
+Button B: X+67, Y+21
+Prize: X=10000000012748, Y=10000000012176
+
+Button A: X+17, Y+86
+Button B: X+84, Y+37
+Prize: X=10000000007870, Y=10000000006450
+
+Button A: X+69, Y+23
+Button B: X+27, Y+71
+Prize: X=10000000018641, Y=10000000010279
+```
+Now, it is only possible to win a prize on the second and fourth claw machines. Unfortunately, it will take many more than `100` presses to do so.
+
+Using the corrected prize coordinates, figure out how to win as many prizes as possible. What is the fewest tokens you would have to spend to win all possible prizes?
