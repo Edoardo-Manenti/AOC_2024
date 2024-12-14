@@ -70,7 +70,7 @@ Button B: X+27, Y+71
 Prize: X=18641, Y=10279
 """
         value = part2(test_input)
-        exp_value = 0
+        exp_value = 875318608908
 
         self.assertEqual(value, exp_value)
 if __name__ == "__main__":
