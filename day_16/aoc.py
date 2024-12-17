@@ -1,10 +1,9 @@
+from collections import defaultdict
+import sys
 import timeit
+import numpy as np
 
 dir = [[0,1],[1,0],[0,-1],[-1,0]]
-
-def print_maze(hall):
-    for r in hall:
-            print(''.join(r))
 
 def find_start_end(input_file):
     maze = [list(r) for r in input_file.split("\n") if len(r) > 0]
@@ -19,7 +18,6 @@ def find_start_end(input_file):
 def parse_input(input_file):
     maze = [[c != '#' for c in list(r)] for r in input_file.split("\n") if len(r) > 0]
     s, e = find_start_end(input_file)
-    print(maze)
     print("Start: {}\nEnd: {}".format(s,e))
     return maze, s, e
 
@@ -28,80 +26,78 @@ def get_neigh(maze, pos):
     for d in dir:
         next = [sum(x) for x in zip(pos, d)]
         x,y = next
+        if next == pos:
+            continue
         if x in range(len(maze)) and y in range(len(maze[0])):
             if maze[x][y]:
-                neighbours.append(next)
+                neighbours.append((next, d))
     return neighbours
 
-def backtrack(maze, s, e, solution):
-    result = [e]
-    last_idx = solution.index(e)
-    last = e
-    while last != s:
-        for n in get_neigh(maze, last):
-            if n in solution:
-                i = solution.index(n)
-                if i < last_idx:
-                    result.append(n)
-                    last = n
-                    last_idx = i
-    result.reverse()
-    return result
-                
-def calc_cost(solution):
-    cost = 0
-    for i,r in enumerate(solution):
-        if i == 0:
-            last_pos = r
-            last_dir = dir[0]
-        x,y = r
-        x1,y1 = last_pos
-        d = [x-x1, y-y1]
-        if d == last_dir:
-            cost += 1
-        elif d == dir[(dir.index(last_dir)+2)%4]:
-            cost += 2001
+def rec(maze, curr, e, visited, cost, curr_dir, solutions):
+    if cost > solutions:
+        return solutions
+    #print(cost)
+    #print(curr)
+    if curr == e:
+        #print("Found END")
+        if cost < solutions:
+            solutions = cost
+        return solutions
+    visited[tuple(curr)]=cost
+    #print(solutions)
+    for n,d in get_neigh(maze, curr):
+        if tuple(n) in visited.keys():
+            if visited[tuple(n)]<cost:
+                continue
+        if d == curr_dir:
+            solutions = rec(maze, n, e, visited, cost+1, d, solutions)
         else:
-            cost += 1001
-        last_dir = d
-        last_pos = r
-    return cost
+            solutions = rec(maze, n, e, visited, cost+1001, d, solutions)
+    return solutions
 
-def bfs(maze, s, e):
-    solution = []
-    frontier = []
-    visited = []
-
-    frontier.append(s)
-    visited.append(s)
-
-    while frontier:
-        next = frontier.pop(0)
-        if next == e:
-            solution.append(next)
-            break
-        solution.append(next)
-        for neigh in get_neigh(maze, next):
-            if neigh not in visited:
-                frontier.append(neigh)
-                visited.append(neigh)
-
-    print(solution)
-    solution = backtrack(maze, s, e, solution)
-    return solution
+def rec2(maze, curr, e, visited, cost, curr_dir, solutions, opt_path):
+    if cost > solutions:
+        opt_path = []
+        return solutions, opt_path
+    #print(cost)
+    #print(curr)
+    if curr == e:
+        #print("Found END")
+        if cost <= solutions:
+            solutions = cost
+        return solutions, opt_path
+    visited[tuple(curr)]=cost
+    opt_path.append(tuple(curr))
+    #print(solutions)
+    for n,d in get_neigh(maze, curr):
+        if tuple(n) in visited.keys():
+            if visited[tuple(n)]<cost:
+                continue
+        if d == curr_dir:
+            solutions, path = rec2(maze, n, e, visited, cost+1, d, solutions, [])
+        else:
+            solutions, path = rec2(maze, n, e, visited, cost+1001, d, solutions, [])
+            if len(path) > 0:
+                opt_path = path
+    return solutions, opt_path
 
 def part1(input_file):
     maze, s, e = parse_input(input_file)
-    solution = bfs(maze, s, e)
-    print(solution)
-    cost = calc_cost(solution)
-    print(cost)
-    return 0
+    visited = defaultdict(int)
+    solutions = rec(maze, s, e, visited, 0, [0,1], 10000000)
+    #print(visited)
+    print(solutions)
+    return solutions
 
 def part2(input_file):
-    return 0
+    maze, s, e = parse_input(input_file)
+    visited = defaultdict(int)
+    solution, path = rec2(maze, s, e, visited, 0, [0,1], 10000000, [])
+    print(path)
+    return solution
 
 def solution():
+    sys.setrecursionlimit(5000)
     input_file = open("input.txt", "r").read()
     print(part1(input_file))
     print(part2(input_file))
