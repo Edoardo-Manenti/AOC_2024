@@ -1,7 +1,6 @@
 from collections import defaultdict
-import sys
+import heapq
 import timeit
-import numpy as np
 
 dir = [[0,1],[1,0],[0,-1],[-1,0]]
 
@@ -33,6 +32,21 @@ def get_neigh(maze, pos):
                 neighbours.append((next, d))
     return neighbours
 
+def get_neigh_cost(maze, pos, curr_dir):
+    neighbours = []
+    for d in dir:
+        next = [sum(x) for x in zip(pos, d)]
+        x,y = next
+        if next == pos:
+            continue
+        if x in range(len(maze)) and y in range(len(maze[0])):
+            if maze[x][y]:
+                if d == curr_dir:
+                    neighbours.append((next, d, 1))
+                else:
+                    neighbours.append((next, d, 1001))
+    return neighbours
+
 def rec(maze, curr, e, visited, cost, curr_dir, solutions):
     if cost > solutions:
         return solutions
@@ -55,31 +69,17 @@ def rec(maze, curr, e, visited, cost, curr_dir, solutions):
             solutions = rec(maze, n, e, visited, cost+1001, d, solutions)
     return solutions
 
-def rec2(maze, curr, e, visited, cost, curr_dir, solutions, opt_path):
-    if cost > solutions:
-        opt_path = []
-        return solutions, opt_path
-    #print(cost)
-    #print(curr)
-    if curr == e:
-        #print("Found END")
-        if cost <= solutions:
-            solutions = cost
-        return solutions, opt_path
-    visited[tuple(curr)]=cost
-    opt_path.append(tuple(curr))
-    #print(solutions)
-    for n,d in get_neigh(maze, curr):
-        if tuple(n) in visited.keys():
-            if visited[tuple(n)]<cost:
-                continue
-        if d == curr_dir:
-            solutions, path = rec2(maze, n, e, visited, cost+1, d, solutions, [])
-        else:
-            solutions, path = rec2(maze, n, e, visited, cost+1001, d, solutions, [])
-            if len(path) > 0:
-                opt_path = path
-    return solutions, opt_path
+def dijkstra(maze, s, e):
+    sx, sy = s
+    dx, dy = dir[0]
+    pq = heapq.heapify([(0, sx, sy, dx, dy)])
+    seen = [(sx, sy, dx, dy)]
+    while pq:
+        cost, cx, cy, dx, dy = heapq.heappop()
+        if (cx, cy) == e:
+            return cost
+        seen.append((cx, cy, dx, dy))
+        for next, d in get_neigh(maze, (dx, dy)):
 
 def part1(input_file):
     maze, s, e = parse_input(input_file)
